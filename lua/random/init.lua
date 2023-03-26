@@ -21,23 +21,34 @@ function M.choose(color)
 	return color
 end
 
-local lastTimer
+local lastTimer = nil
+local oldHeight = nil
 
--- print without making user hit enter key
+-- print without making user hit enter key, by growing cmdheight sufficiently, temporarily
 function M.print(color)
-	local oldHeight = vim.o.cmdheight
-	if lastTimer then
+	if oldHeight and oldHeight >= 1 then
+		-- it's already sufficiently large, don't adjust size, just print
+		print(color)
+		return
+	elseif not lastTimer then
+		-- first print, so capture height
+		oldHeight = vim.o.cmdheight
+	else
+		-- reset the clock on resetting cmdheight
 		lastTimer:stop()
 	end
-	if oldHeight < 1 then
-		-- create space for the print to appear in
-		vim.o.cmdheight = 1
-		vim.cmd.redraw()
-		lastTimer = vim.defer_fn(function()
-			-- reset back eventually
-			vim.o.cmdheight = oldHeight
-		end, 6000)
-	end
+
+	-- create space for the print to appear in
+	vim.o.cmdheight = 1
+	vim.cmd.redraw()
+
+	-- reset back eventually
+	lastTimer = vim.defer_fn(function()
+		vim.o.cmdheight = oldHeight
+		oldHeight = nil
+	end, 6000)
+
+	-- print
 	print(color)
 end
 
