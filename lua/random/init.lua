@@ -8,6 +8,7 @@ function M.random()
 	-- todo: make this configurable
 	-- ref: https://github.com/folke/tokyonight.nvim/blob/main/lua/tokyonight/config.lua
 	print(randomScheme)
+	return randomScheme
 end
 
 return M
