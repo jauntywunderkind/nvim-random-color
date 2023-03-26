@@ -1,5 +1,8 @@
 local M = {}
 
+-- otherwise we get the same thing haha
+math.randomseed(os.time())
+
 -- find a random color --- but don't set
 function M.pick()
 	local colorschemesAll = vim.fn.getcompletion("", "color")
